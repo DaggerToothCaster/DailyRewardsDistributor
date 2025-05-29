@@ -61,8 +61,6 @@ async fn main() -> Result<()> {
                 let contract = contract_test.clone();
                 async move {
                     info!("执行测试任务 - 检查合约状态");
-                    let _ = contract.get_balance().await;
-                    let _ = contract.is_contract_active().await;
                     let _ = distribute_daily_rewards(contract).await;
                     Ok(())
                 }
@@ -91,35 +89,6 @@ async fn main() -> Result<()> {
 
 async fn distribute_daily_rewards(contract: RewardsContract) -> Result<()> {
     info!("开始分发每日奖励...");
-
-    // 检查账户余额
-    let balance = contract.get_balance().await?;
-    if balance < ethers::utils::parse_ether("0.01")? {
-        error!(
-            "账户余额不足，当前余额: {} ETH",
-            ethers::utils::format_ether(balance)
-        );
-        return Err(anyhow::anyhow!("账户余额不足"));
-    }
-
-    // 检查合约状态
-    if !contract.is_contract_active().await? {
-        info!("合约当前不活跃，跳过奖励分发");
-        return Ok(());
-    }
-
-    // 检查上次分发时间（避免重复分发）
-    if let Ok(last_time) = contract.get_last_distribution_time().await {
-        let current_time = std::time::SystemTime::now()
-            .duration_since(std::time::UNIX_EPOCH)?
-            .as_secs();
-
-        // 如果距离上次分发不足23小时，跳过本次分发
-        if current_time - last_time.as_u64() < 23 * 3600 {
-            info!("距离上次分发时间不足23小时，跳过本次分发");
-            return Ok(());
-        }
-    }
 
     // 调用分发奖励函数
     match contract.distribute_daily_rewards().await {
