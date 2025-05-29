@@ -4,7 +4,6 @@ use ethers::types::transaction::eip2718::TypedTransaction;
 use std::sync::Arc;
 use tracing::{debug, error, info, warn};
 
-// 简化的合约ABI - 只保留必要的函数
 abigen!(
     RewardsContractABI,
     r#"[
