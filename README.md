@@ -19,3 +19,16 @@
 
 ```bash
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+```
+
+### 2. 编译
+
+```bash
+cargo compile
+```
+
+### 3. 运行
+
+```bash
+cargo run
+
