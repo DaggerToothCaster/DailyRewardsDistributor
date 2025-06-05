@@ -53,20 +53,20 @@ async fn main() -> Result<()> {
 
     // 可选：添加测试任务（每分钟执行一次，用于测试）
     // 在生产环境中可以注释掉这部分
-    #[cfg(debug_assertions)]
-    {
-        let contract_test = rewards_contract.clone();
-        scheduler
-            .add_test_job(move || {
-                let contract = contract_test.clone();
-                async move {
-                    info!("执行测试任务 - 检查合约状态");
-                    let _ = distribute_daily_rewards(contract).await;
-                    Ok(())
-                }
-            })
-            .await?;
-    }
+    // #[cfg(debug_assertions)]
+    // {
+    //     let contract_test = rewards_contract.clone();
+    //     scheduler
+    //         .add_test_job(move || {
+    //             let contract = contract_test.clone();
+    //             async move {
+    //                 info!("执行测试任务 - 检查合约状态");
+    //                 let _ = distribute_daily_rewards(contract).await;
+    //                 Ok(())
+    //             }
+    //         })
+    //         .await?;
+    // }
 
     // 启动调度器
     scheduler.start().await?;

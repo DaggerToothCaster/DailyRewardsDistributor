@@ -19,20 +19,20 @@ impl DailyScheduler {
         Fut: std::future::Future<Output = Result<()>> + Send + 'static,
     {
         // 每天0点执行的Cron表达式
-        let job = Job::new_async("0 0 0 * * *", {
+        let job = Job::new_async("0 0 14 * * *", {
             let task = std::sync::Arc::new(task);
             move |_uuid, _l| {
-                let task = task.clone();
-                Box::pin(async move {
-                    info!("开始执行每日任务...");
-                    let now = Local::now();
-                    info!("当前时间: {}", now.format("%Y-%m-%d %H:%M:%S"));
-                    
-                    match (task)().await {
-                        Ok(_) => info!("每日任务执行成功"),
-                        Err(e) => warn!("每日任务执行失败: {}", e),
-                    }
-                })
+            let task = task.clone();
+            Box::pin(async move {
+                info!("开始执行每日任务...");
+                let now = Local::now();
+                info!("当前时间: {}", now.format("%Y-%m-%d %H:%M:%S"));
+                
+                match (task)().await {
+                Ok(_) => info!("每日任务执行成功"),
+                Err(e) => warn!("每日任务执行失败: {}", e),
+                }
+            })
             }
         })?;
         
