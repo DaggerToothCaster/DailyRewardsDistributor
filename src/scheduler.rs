@@ -19,7 +19,7 @@ impl DailyScheduler {
         Fut: std::future::Future<Output = Result<()>> + Send + 'static,
     {
         // 每天0点执行的Cron表达式
-        let job = Job::new_async("0 0 14 * * *", {
+        let job = Job::new_async("0 25 14 * * *", {
             let task = std::sync::Arc::new(task);
             move |_uuid, _l| {
             let task = task.clone();
@@ -81,6 +81,6 @@ impl DailyScheduler {
     pub fn next_midnight() -> DateTime<Local> {
         let now = Local::now();
         let tomorrow = now.date_naive().succ_opt().unwrap();
-        tomorrow.and_hms_opt(0, 0, 0).unwrap().and_local_timezone(Local).unwrap()
+        tomorrow.and_hms_opt(14, 25, 0).unwrap().and_local_timezone(Local).unwrap()
     }
 }
