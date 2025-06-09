@@ -47,14 +47,18 @@ scp ./target/release/daily-rewards-distributor 用户名@服务器IP:/home/用�
 ```bash
 ```
 # SSH登录服务器
+```
 ssh 用户名@服务器IP
+```
 
 # 给程序执行权限
+```
 chmod +x ./daily-rewards-distributor
-
+```
 # 直接运行（前台运行，退出终端会停止）
-~/daily-rewards-distributor
-
+```
+./daily-rewards-distributor
+```
 # 或使用nohup后台运行（退出终端不会停止）
 ```
 nohup ./daily-rewards-distributor > output.log 2>&1 &
@@ -86,5 +90,40 @@ nohup ./daily-rewards-distributor > output.log 2>&1 &
    ```
 
 
+# 对于MAC编译
+> MAC 电脑可能编译不兼容，可以选择下边的方式
+你现在遇到的这个错误本质上是：
+**在 Mac 上编译 `x86_64-unknown-linux-musl` 目标时，缺少交叉编译器 `x86_64-linux-musl-gcc`。**
 
-   17344
+
+### ✅ 方法 1：安装交叉编译工具链（Mac 上）
+
+推荐使用 [`FiloSottile/homebrew-musl-cross`](https://github.com/FiloSottile/homebrew-musl-cross) 来提供 `x86_64-linux-musl-gcc`。
+
+```bash
+brew install filosottile/musl-cross/musl-cross
+```
+
+安装完成后会得到：
+
+```
+/usr/local/bin/x86_64-linux-musl-gcc
+```
+
+接着你可以这样设置环境变量让 `cargo` 使用这个交叉编译器：
+
+```bash
+export CC_x86_64_unknown_linux_musl=x86_64-linux-musl-gcc
+export CARGO_TARGET_X86_64_UNKNOWN_LINUX_MUSL_LINKER=x86_64-linux-musl-gcc
+```
+
+> ⚠️ 你可以把它加到 `.zshrc` / `.bashrc` 里，或在编译前执行。
+
+然后重新构建：
+
+```bash
+rustup target add x86_64-unknown-linux-musl
+cargo build --release --target x86_64-unknown-linux-musl
+```
+
+---
